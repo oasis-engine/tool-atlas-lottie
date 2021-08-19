@@ -41,7 +41,7 @@ module.exports = function transform(lottiePath) {
       }
     }
 
-    atlasTool.pack(images, { output: `${dir}/${nm}` }).then(() => {
+    return atlasTool.pack(images, { output: `${dir}/${nm}` }).then(() => {
       console.log('Pack atlas success!')
 
       if (fs.existsSync(spritesDir)) {
