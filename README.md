@@ -12,7 +12,9 @@ npm i @oasis-engine/tool-atlas-lottie -g
 
 2. Use command in terminal
 
+```bash
 oasis-atlas-lottie -s lottieFile.json
+```
 
 # Usage in node project
 
