@@ -13,7 +13,7 @@ function createImage(asset, dir) {
   const name = `${dir}/${id}.png`;
 
   fs.writeFile(name, base64Data, 'base64', function (err) {
-    console.log(err);
+    err && console.log(err);
   });
 
   return path.join(__dirname, name);
@@ -26,24 +26,29 @@ module.exports = function transform(lottiePath) {
     let data = JSON.parse(rawData);
     const { nm, assets } = data;
 
-    const spritesDir = `./.sprites`;
-    const dir = `./${nm}`
+    const spritesDir = path.join(__dirname, `.sprites`);
+    const dir = path.join(__dirname, nm);
     const images = []
 
     if (!fs.existsSync(spritesDir)) {
       fs.mkdirSync(spritesDir);
     }
 
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+
     for (let i = 0; i < assets.length; i++) {
-      const image = createImage(assets[i], dir);
+      const image = createImage(assets[i], spritesDir);
       if (image) {
         images.push(image);
       }
     }
 
+    console.log('Pack images:', images)
+
     return atlasTool.pack(images, { output: `${dir}/${nm}` }).then(() => {
       console.log('Pack atlas success!')
-
       if (fs.existsSync(spritesDir)) {
         fs.rmdirSync(spritesDir, { recursive: true });
       }
