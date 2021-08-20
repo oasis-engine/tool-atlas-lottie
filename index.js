@@ -19,15 +19,16 @@ function createImage(asset, dir) {
   return name;
 }
 
-module.exports = function transform(lottiePath) {
+module.exports = function transform(lottiePath, options = {}) {
   let rawData = fs.readFileSync(lottiePath);
 
   try {
     let data = JSON.parse(rawData);
     const { nm, assets } = data;
+    const { output } = options;
 
-    const spritesDir = path.resolve(`.sprites`);
-    const dir = path.resolve(nm);
+    const spritesDir = output ? `${output}/.sprites` : path.resolve(`.sprites`);
+    const dir = output ||  path.resolve(nm);
     const images = []
 
     if (!fs.existsSync(spritesDir)) {
