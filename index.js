@@ -60,8 +60,6 @@ module.exports = async function transform(lottiePath, options = {}) {
 
     const res = await atlasTool.pack(images, { output: `${dir}/${nm}` });
 
-    console.log('Pack atlas success!')
-
     if (fs.existsSync(spritesDir)) {
       fs.rmdirSync(spritesDir, { recursive: true });
     }
@@ -69,7 +67,12 @@ module.exports = async function transform(lottiePath, options = {}) {
     // Rewrite lottie json file
     delete data.assets;
 
-    fs.writeFileSync(`${dir}/${nm}.json`, JSON.stringify(data));
+    const jsonFilePath = `${dir}/${nm}.json`;
+    fs.writeFileSync(jsonFilePath, JSON.stringify(data));
+
+    res.info.jsonFile = jsonFilePath;
+
+    console.log('Pack atlas success!', res);
 
     return res;
 
