@@ -1,6 +1,6 @@
 {
   "name": "@oasis-engine/tool-atlas-lottie",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Transform lottie JSON file to atlas format in oasis engine.",
   "main": "index.js",
   "bin": {
