@@ -6,10 +6,6 @@ const path = require('path');
 function createImage(asset, dir) {
   const { id, p } = asset;
 
-  if (!p || !id) {
-    return;
-  }
-
   const base64Data = p.replace(/^data:image\/png;base64,/, "");
   const name = `${dir}/${id}.png`;
 
@@ -18,6 +14,18 @@ function createImage(asset, dir) {
   });
 
   return name;
+}
+
+function createLayer(asset, originalLayers) {
+  const { layers, id } = asset;
+
+  for (let i = 0; i < layers.length; i++) {
+    const layer = layers[i];
+
+    layer.parent = `layer_${id}`;
+  }
+
+  return originalLayers.concat(layers);
 }
 
 module.exports = async function transform(lottiePath, options = {}) {
@@ -40,7 +48,7 @@ module.exports = async function transform(lottiePath, options = {}) {
     const { output } = options;
 
     const spritesDir = output ? `${output}/.sprites` : path.resolve(`.sprites`);
-    const dir = output ||  path.resolve(nm);
+    const dir = output || path.resolve(nm);
     const images = []
 
     if (!fs.existsSync(spritesDir)) {
@@ -52,9 +60,19 @@ module.exports = async function transform(lottiePath, options = {}) {
     }
 
     for (let i = 0; i < assets.length; i++) {
-      const image = createImage(assets[i], spritesDir);
-      if (image) {
-        images.push(image);
+      const asset = assets[i];
+
+      // sprite assets
+      if (asset.p) {
+        const image = createImage(asset, spritesDir);
+        if (image) {
+          images.push(image);
+        }
+      }
+
+      // layer assets
+      if (asset.layers) {
+        data.layers = createLayer(asset, data.layers);
       }
     }
 
