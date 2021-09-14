@@ -76,7 +76,12 @@ module.exports = async function transform(lottiePath, options = {}) {
       }
     }
 
-    const res = await atlasTool.pack(images, { output: `${dir}/${nm}` });
+    const res = await atlasTool.pack(images, { output: `${dir}/${nm}`, ...options });
+
+    if (res.code !== 0) {
+      console.log('Atlas Error:', res.msg);
+      return res;
+    }
 
     if (fs.existsSync(spritesDir)) {
       fs.rmdirSync(spritesDir, { recursive: true });
@@ -95,6 +100,9 @@ module.exports = async function transform(lottiePath, options = {}) {
     return res;
 
   } catch (error) {
-    console.log('Parse lottie file error:', error);
+    return {
+      code: 11,
+      msg: 'Parse lottie file error'
+    };
   }
 }
