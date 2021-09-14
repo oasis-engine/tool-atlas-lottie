@@ -76,7 +76,7 @@ module.exports = async function transform(lottiePath, options = {}) {
       }
     }
 
-    const res = await atlasTool.pack(images, { output: `${dir}/${nm}`, ...options });
+    const res = await atlasTool.pack(images, { output: `${dir}/${nm}`, maxWidth: 4096, maxHeight: 4096, ...options });
 
     if (res.code !== 0) {
       console.log('Atlas Error:', res.msg);
