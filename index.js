@@ -16,18 +16,6 @@ function createImage(asset, dir) {
   return name;
 }
 
-function createLayer(asset, originalLayers) {
-  const { layers, id } = asset;
-
-  for (let i = 0; i < layers.length; i++) {
-    const layer = layers[i];
-
-    layer.parent = `layer_${id}`;
-  }
-
-  return originalLayers.concat(layers);
-}
-
 module.exports = async function transform(lottiePath, options = {}) {
   let rawData, data;
 
@@ -59,7 +47,7 @@ module.exports = async function transform(lottiePath, options = {}) {
       fs.mkdirSync(dir);
     }
 
-    for (let i = 0; i < assets.length; i++) {
+    for (let i = 0, l = assets.length; i < l; i++) {
       const asset = assets[i];
 
       // sprite assets
@@ -69,12 +57,8 @@ module.exports = async function transform(lottiePath, options = {}) {
           images.push(image);
         }
       }
-
-      // layer assets
-      if (asset.layers) {
-        data.layers = createLayer(asset, data.layers);
-      }
     }
+
 
     const res = await atlasTool.pack(images, { output: `${dir}/${nm}`, maxWidth: 4096, maxHeight: 4096, ...options });
 
@@ -88,7 +72,9 @@ module.exports = async function transform(lottiePath, options = {}) {
     }
 
     // Rewrite lottie json file
-    delete data.assets;
+    data.assets = data.assets.filter((asset) => {
+      return !asset.p;
+    });
 
     const jsonFilePath = `${dir}/${nm}.json`;
     fs.writeFileSync(jsonFilePath, JSON.stringify(data));
