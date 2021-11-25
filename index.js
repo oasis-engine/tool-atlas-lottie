@@ -6,7 +6,7 @@ const path = require('path');
 function createImage(asset, dir) {
   const { id, p } = asset;
 
-  const base64Data = p.replace(/^data:image\/png;base64,/, "");
+  const base64Data = p.replace(/^data:image\/.+;base64,/, "");
   const name = `${dir}/${id}.png`;
 
   fs.writeFile(name, base64Data, 'base64', function (err) {
