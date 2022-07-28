@@ -12,8 +12,14 @@ npm i @oasis-engine/tool-atlas-lottie -g
 
 2. Use command in terminal
 
+if lottie file has base64 images:
 ```bash
 oasis-atlas-lottie -s lottieFile.json
+```
+
+if lottie file has images in a directory:
+```bash
+oasis-atlas-lottie -s lottieFile.json -i ./images
 ```
 
 # Usage in node project
