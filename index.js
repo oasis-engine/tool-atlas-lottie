@@ -16,7 +16,7 @@ function createImage(asset, dir) {
   return name;
 }
 
-module.exports = async function transform(lottiePath, options = {}) {
+module.exports = async function transform(lottiePath, imagesPath, options = {}) {
   let rawData, data;
 
   if (lottiePath.startsWith('http://') || lottiePath.startsWith('https://')) {
@@ -37,28 +37,33 @@ module.exports = async function transform(lottiePath, options = {}) {
 
     const spritesDir = output ? `${output}/.sprites` : path.resolve(`.sprites`);
     const dir = output || path.resolve(nm);
-    const images = []
 
-    if (!fs.existsSync(spritesDir)) {
-      fs.mkdirSync(spritesDir);
-    }
+    let images = []
 
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
+    if (imagesPath) {
+      const files = fs.readdirSync(imagesPath)
+      images = files.map(file => `${imagesPath}/${file}`);
+    } else {
+      if (!fs.existsSync(spritesDir)) {
+        fs.mkdirSync(spritesDir);
+      }
 
-    for (let i = 0, l = assets.length; i < l; i++) {
-      const asset = assets[i];
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+      }
 
-      // sprite assets
-      if (asset.p) {
-        const image = createImage(asset, spritesDir);
-        if (image) {
-          images.push(image);
+      for (let i = 0, l = assets.length; i < l; i++) {
+        const asset = assets[i];
+
+        // sprite assets
+        if (asset.p) {
+          const image = createImage(asset, spritesDir);
+          if (image) {
+            images.push(image);
+          }
         }
       }
     }
-
 
     const res = await atlasTool.pack(images, { output: `${dir}/${nm}`, maxWidth: 4096, maxHeight: 4096, ...options });
 
